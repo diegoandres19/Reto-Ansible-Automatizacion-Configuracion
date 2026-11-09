@@ -1,0 +1,12 @@
+---
+- name: Instalar paquetes basicos
+  hosts: servidores
+  become: true
+  tasks:
+    - name: Instalar htop y tree
+      ansible.builtin.apt:
+        name:
+          - htop
+          - tree
+        state: present
+        update_cache: true

@@ -1,0 +1,31 @@
+---
+- name: Configurar servidor web nginx
+  hosts: servidores
+  become: true
+  tasks:
+    - name: Instalar nginx
+      ansible.builtin.apt:
+        name: nginx
+        state: present
+        update_cache: true
+
+    - name: Publicar pagina de inicio
+      ansible.builtin.copy:
+        dest: /var/www/html/index.html
+        content: |
+          <h1>Servidor {{ inventory_hostname }}</h1>
+          <p>Configurado con Ansible - version para video</p>
+        mode: "0644"
+      notify: Recargar nginx
+
+    - name: Asegurar que nginx este activo y arranque con el sistema
+      ansible.builtin.service:
+        name: nginx
+        state: started
+        enabled: true
+
+  handlers:
+    - name: Recargar nginx
+      ansible.builtin.service:
+        name: nginx
+        state: reloaded

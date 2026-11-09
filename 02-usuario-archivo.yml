@@ -1,0 +1,27 @@
+---
+- name: Crear usuario y gestionar archivos
+  hosts: servidores
+  become: true
+  tasks:
+    - name: Crear el usuario devops
+      ansible.builtin.user:
+        name: devops
+        shell: /bin/bash
+        create_home: true
+        state: present
+
+    - name: Crear el directorio de la aplicacion
+      ansible.builtin.file:
+        path: /opt/miapp
+        state: directory
+        owner: devops
+        mode: "0755"
+
+    - name: Crear el archivo de configuracion
+      ansible.builtin.copy:
+        dest: /opt/miapp/config.txt
+        content: |
+          entorno=laboratorio
+          servidor={{ inventory_hostname }}
+        owner: devops
+        mode: "0644"
